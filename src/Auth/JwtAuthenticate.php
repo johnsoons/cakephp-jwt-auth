@@ -111,11 +111,14 @@ class JwtAuthenticate extends BaseAuthenticate
 
         // @codeCoverageIgnoreStart
         if (!$token && function_exists('getallheaders')) {
-            $headers = getallheaders();
-            if (isset($headers['Authorization']) &&
-                substr($headers['Authorization'], 0, 7) === 'Bearer '
+            // index of the array returned by the function getallheaders() is case-insensitive.
+            // @see http://php.net/manual/en/function.getallheaders.php#52029
+
+            $headers = array_change_key_case(getallheaders());
+            if (isset($headers['authorization']) &&
+                substr($headers['authorization'], 0, 7) === 'Bearer '
             ) {
-                $token = $headers['Authorization'];
+                $token = $headers['authorization'];
             }
         }
         // @codeCoverageIgnoreEnd
